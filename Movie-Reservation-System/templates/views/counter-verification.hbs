@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <title>Counter Verification - ApnaShow</title>
+    <style>
+        .verification-container {
+            max-width: 800px;
+            margin: 50px auto;
+        }
+        .payment-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .customer-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .verification-actions {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .btn-verify {
+            background: #4caf50;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            margin: 10px;
+        }
+        .btn-verify:hover {
+            background: #45a049;
+        }
+        .btn-reject {
+            background: #f44336;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            margin: 10px;
+        }
+        .btn-reject:hover {
+            background: #da190b;
+        }
+        .status-badge {
+            font-size: 16px;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    {{>header}}
+
+    <div class="container verification-container">
+        <div class="card shadow">
+            <div class="card-header text-center">
+                <h4><i class="fas fa-user-tie"></i> Counter Person Verification</h4>
+                <p class="text-muted">Verify customer payment and confirm booking</p>
+            </div>
+            <div class="card-body">
+                {{#if bookingId}}
+                <div class="alert alert-info">
+                    <strong>Booking ID:</strong> {{bookingId}}
+                </div>
+                {{/if}}
+
+
+                <div class="payment-details">
+                    <h5><i class="fas fa-credit-card"></i> Payment Details</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Payment Method:</strong> Online (QR Code)</p>
+                            <p><strong>Status:</strong> <span class="badge badge-warning status-badge">Pending Verification</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Amount:</strong> ₹<span id="payment-amount">Loading...</span></p>
+                            <p><strong>Movie:</strong> <span id="movie-name">Loading...</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">
+                    <h6><strong>Verification Instructions:</strong></h6>
+                    <ol>
+                        <li>Check customer's payment confirmation on their device</li>
+                        <li>Verify the payment amount matches the booking</li>
+                        <li>Confirm the customer's identity</li>
+                        <li>Click "Confirm Payment" to proceed to ticket printing</li>
+                        <li>Or click "Reject Payment" if verification fails</li>
+                    </ol>
+                </div>
+
+                <div class="verification-actions">
+                    <form method="POST" action="/confirm-payment" style="display: inline;">
+                        <input type="hidden" name="bookingId" value="{{bookingId}}">
+                        <button type="submit" class="btn btn-success btn-verify">
+                            <i class="fas fa-check"></i> Confirm Payment
+                        </button>
+                    </form>
+                    
+                    <button type="button" class="btn btn-danger btn-reject" onclick="rejectPayment()">
+                        <i class="fas fa-times"></i> Reject Payment
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load payment details from localStorage (same as other pages)
+        document.addEventListener('DOMContentLoaded', function() {
+            const movieName = localStorage.getItem('movieName') || 'Selected Movie';
+            const totalPrice = localStorage.getItem('totalprice') || '0';
+            
+            document.getElementById('payment-amount').textContent = totalPrice;
+            document.getElementById('movie-name').textContent = movieName;
+        });
+
+        function rejectPayment() {
+            if (confirm('Are you sure you want to reject this payment? This will cancel the booking.')) {
+                alert('Payment rejected. Customer will be notified.');
+                window.location.href = '/';
+            }
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</body>
+</html>

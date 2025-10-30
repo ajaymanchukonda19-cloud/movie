@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <title>Payment QR - ApnaShow</title>
+    <style>
+        .payment-container {
+            max-width: 600px;
+            margin: 50px auto;
+        }
+        .qr-container {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .qr-code {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .payment-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .status-pending {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        .counter-link {
+            background: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        .counter-link:hover {
+            background: #45a049;
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    {{>header}}
+
+    <div class="container payment-container">
+        <div class="card shadow">
+            <div class="card-header text-center">
+                <h4>Online Payment</h4>
+                <p class="text-muted">Scan QR code to complete payment</p>
+            </div>
+            <div class="card-body">
+                {{#if bookingId}}
+                <div class="alert alert-info">
+                    <strong>Booking ID:</strong> {{bookingId}}
+                </div>
+                {{/if}}
+
+                <div class="qr-container">
+                    <h5>Scan this QR code with your payment app</h5>
+                    <img src="{{qrCode}}" alt="Payment QR Code" class="img-fluid qr-code">
+                    <p class="text-muted mt-3">Use UPI apps like PhonePe, Google Pay, Paytm, etc.</p>
+                </div>
+
+                <div class="payment-info">
+                    <h6><strong>Payment Details:</strong></h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Amount:</strong> ₹{{paymentData.amount}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Booking ID:</strong> {{paymentData.bookingId}}</p>
+                            <p><strong>Time:</strong> {{paymentData.timestamp}}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <p class="status-pending">⏳ Payment Pending - Waiting for confirmation</p>
+                    
+                    <a href="/verify-payment/{{bookingId}}" class="counter-link">
+                        <i class="fas fa-check"></i> Completed
+                    </a>
+                </div>
+
+                <div class="mt-4">
+                    <div class="alert alert-warning">
+                        <strong>Instructions:</strong>
+                        <ol>
+                            <li>Scan the QR code with your payment app</li>
+                            <li>Complete the payment</li>
+                            <li>Click "Completed" button</li>
+                            <li>Wait for counter person to verify and confirm</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <a href="/" class="btn btn-outline-secondary">Cancel Payment</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</body>
+</html>

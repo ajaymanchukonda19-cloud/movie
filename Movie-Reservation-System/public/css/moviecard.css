@@ -1,0 +1,127 @@
+.rating{
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background-color: #ffffff;
+    border: 1px solid #e6eef7;
+    border-radius: 999px;
+    padding: 6px 12px;
+    box-shadow: 0 6px 14px rgba(15,23,42,0.08);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #0f172a;
+    line-height: 1.1;
+}
+
+.red-heart{
+    color: #ff3b6a;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+}
+
+.movie-card{
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(15,23,42,0.08);
+    transition: transform .2s ease, box-shadow .2s ease;
+    background: #fff;
+}
+
+.movie-card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 18px 34px rgba(15,23,42,0.14);
+}
+
+.movie-img{
+    height: 340px;
+    object-fit: cover;
+}
+.movie-card.poster-overlay{
+    position: relative;
+}
+.movie-card.poster-overlay .rating{
+    top: auto; left: 12px; bottom: 12px;
+    background: rgba(15,23,42,0.86);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Card content */
+.movie-card .card-body{
+    padding: 14px 16px 16px 16px;
+}
+
+.movie-card .card-title{
+    font-size: 20px;
+    font-weight: 700;
+    color: #16324f;
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
+}
+
+.movie-card .card-text{
+    font-size: 14px;
+    color: #52627a;
+}
+
+/* Tweak like text inside rating */
+.rating .fa{
+    font-size: 15px;
+}
+.rating span, .rating b, .rating strong{
+    font-weight: 700;
+}
+.movie-card:hover .rating{
+    transform: translateY(-2px);
+}
+
+/* Utility layout improvements for rows of cards */
+/* Responsive grid that mimics streaming apps */
+.movies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px}
+.movies-grid .grid-item{display:block}
+.movie-card{
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    transition: transform .2s ease, box-shadow .2s ease;
+    background: #fff;
+}
+
+.movie-card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+}
+
+/* Poster sizing (ensure consistent height) */
+.movie-img{
+    height: 340px;
+    object-fit: cover;
+}
+
+/* Two-line title clamp and poster rounding consistency */
+.poster-img{border-bottom-left-radius:0;border-bottom-right-radius:0}
+.title-2line{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* Ensure cards stretch to grid width */
+.movie-card{width:100%}
+
+/* Below-title rating pill (hover reveal) */
+.rating-below{
+    position: static;
+    margin-top: 8px;
+    background: #0f172a;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 999px;
+    display: inline-flex;
+    padding: 6px 12px;
+    gap: 6px;
+    box-shadow: 0 6px 14px rgba(15,23,42,0.08);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity .18s ease, transform .18s ease;
+}
+.movie-card:hover .rating-below{opacity:1;transform: translateY(0)}

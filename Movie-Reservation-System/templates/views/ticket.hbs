@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <title>Ticket - ApnaShow</title>
+    <style>
+        .ticket-card { max-width: 720px; margin: 24px auto; }
+        .qr-box { width: 140px; height: 140px; background: #f8f9fa; display:flex; align-items:center; justify-content:center; border-radius:8px; border: 2px dashed #dee2e6; }
+        .muted { color: #6c757d; }
+        @media print { .no-print { display: none; } }
+    </style>
+    {{!-- You can move this to a dedicated CSS later --}}
+</head>
+<body>
+    {{>header}}
+
+    <div class="container ticket-card">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Your Ticket</h5>
+                <small class="muted">ApnaShow</small>
+            </div>
+            <div class="card-body">
+                {{#if bookingId}}
+                <div class="alert alert-info py-2 d-flex justify-content-between align-items-center" role="alert">
+                    <div>
+                        <strong>Booking ID:</strong> <span id="ticket-booking-id">{{bookingId}}</span>
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary" id="btn-copy-id" type="button">Copy</button>
+                </div>
+                {{/if}}
+
+                {{#if paymentMethod}}
+                <div class="alert alert-success py-2" role="alert">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Payment Method:</strong> 
+                            <span class="badge badge-warning" id="payment-method-badge">{{paymentMethod}}</span>
+                        </div>
+                        <div>
+                            <strong>Status:</strong> 
+                            <span class="badge badge-warning" id="payment-status-badge">{{paymentStatus}}</span>
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+                <div class="d-flex justify-content-between flex-wrap">
+                    <div class="mb-3">
+                        <h4 id="ticket-movie" class="mb-1"></h4>
+                        <div class="muted" id="ticket-lang-genre"></div>
+                        <div class="mt-3">
+                            <div><strong>Date:</strong> <span id="ticket-date"></span></div>
+                            <div><strong>Time:</strong> <span id="ticket-time"></span></div>
+                            <div><strong>Screen:</strong> <span id="ticket-screen">1</span></div>
+                        </div>
+                    </div>
+                    <div class="qr-box mb-3">
+                        <div class="text-center">
+                            <div class="mb-2">
+                                <i class="fas fa-eye fa-2x text-primary"></i>
+                            </div>
+                            <div class="small text-muted">Show to the customer</div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div><strong>Seats:</strong> <span id="ticket-seats"></span></div>
+                        <div class="muted">Show this ticket at entry</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="h5 mb-0">₹<span id="ticket-total"></span></div>
+                        <small class="muted">Incl. taxes</small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-between no-print">
+                <a href="/" class="btn btn-outline-secondary">Back to Home</a>
+                <div>
+                    <button class="btn btn-outline-primary mr-2" id="btn-download">Download</button>
+                    <button class="btn btn-success" onclick="window.print()">Print Ticket</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Recover selection details from localStorage (same as seats/orders pages)
+        const movieName = localStorage.getItem('movieName') || 'Selected Movie';
+        const date = localStorage.getItem('movieDate') || '';
+        const time = localStorage.getItem('movietime') || '';
+        const total = localStorage.getItem('totalprice') || '0';
+        const selectedSeats = JSON.parse(localStorage.getItem('selectedSeats') || '[]');
+
+        // Convert seat index array to human-readable labels, e.g., A1, A2...
+        function formatSeatLabels(indexes) {
+            const seatsPerRow = 8; // matches seats.hbs rows
+            return indexes.map(i => {
+                const row = String.fromCharCode(65 + Math.floor(i / seatsPerRow));
+                const col = (i % seatsPerRow) + 1;
+                return `${row}${col}`;
+            }).join(', ');
+        }
+
+        document.getElementById('ticket-movie').textContent = movieName;
+        document.getElementById('ticket-date').textContent = date;
+        document.getElementById('ticket-time').textContent = time;
+        document.getElementById('ticket-total').textContent = total;
+        document.getElementById('ticket-seats').textContent = selectedSeats.length > 0 ? formatSeatLabels(selectedSeats) : '—';
+
+        // Optional: basic file download of the ticket as an image using html2canvas (if included later)
+        document.getElementById('btn-download').addEventListener('click', async () => {
+            try {
+                const el = document.querySelector('.ticket-card .card');
+                if (!window.html2canvas) {
+                    alert('Download requires html2canvas. Printing still works.');
+                    return;
+                }
+                const canvas = await html2canvas(el);
+                const link = document.createElement('a');
+                link.download = `ticket-${Date.now()}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            } catch (e) {
+                console.error(e);
+            }
+        });
+
+        // Copy booking id
+        const copyBtn = document.getElementById('btn-copy-id');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', async () => {
+                const idEl = document.getElementById('ticket-booking-id');
+                try {
+                    await navigator.clipboard.writeText(idEl.textContent);
+                    copyBtn.textContent = 'Copied';
+                    setTimeout(() => (copyBtn.textContent = 'Copy'), 1200);
+                } catch (e) {}
+            });
+        }
+
+        // Format payment method and status badges
+        const paymentMethodBadge = document.getElementById('payment-method-badge');
+        const paymentStatusBadge = document.getElementById('payment-status-badge');
+        
+        if (paymentMethodBadge) {
+            const method = paymentMethodBadge.textContent;
+            if (method === 'cash') {
+                paymentMethodBadge.textContent = 'Cash Payment';
+                paymentMethodBadge.className = 'badge badge-warning';
+            } else if (method === 'online') {
+                paymentMethodBadge.textContent = 'Online Payment';
+                paymentMethodBadge.className = 'badge badge-primary';
+            }
+        }
+        
+        if (paymentStatusBadge) {
+            const status = paymentStatusBadge.textContent;
+            if (status === 'confirmed' || status === 'completed') {
+                paymentStatusBadge.textContent = 'Completed';
+                paymentStatusBadge.className = 'badge badge-success';
+            } else {
+                paymentStatusBadge.textContent = 'Pending';
+                paymentStatusBadge.className = 'badge badge-warning';
+            }
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNa5l0I3JcF2jQkM6kH0c1tJr7m2r7q8m1+3v3xkQm3T6QvYkq2k4j6M8w0O0mO1K2cLQm3mM9iY8m0J2m3P0Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+</html>
+
+

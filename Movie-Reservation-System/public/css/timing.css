@@ -1,0 +1,12 @@
+.date-tabs{gap:12px;margin-bottom:16px}
+.date-tab{padding:14px 18px;background:#f4f6f8;border:1px solid #e3e7ee;border-radius:10px;cursor:pointer;min-width:150px}
+.date-tab:hover{background:#eef2f7}
+
+.schedule-card{background:#ffffff;border:1px solid #e3e7ee;border-radius:14px;color:#1f2d3d}
+.schedule-card h1{font-size:28px;margin-bottom:4px}
+.divider{height:2px;background:#eaecef;border:0;margin:12px 0 18px}
+
+.time-chip{display:inline-block;padding:10px 16px;background:#f9fbff;border:1px solid #d7e3ff;border-radius:8px;margin:0 8px 12px;min-width:72px}
+.time-chip a{color:#2b5cff}
+.time-chip:hover{background:#edf3ff}
+
